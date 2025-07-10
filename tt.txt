@@ -1,0 +1,16 @@
+UPDATE my_table
+SET test = TO_JSON(
+               OBJECT_INSERT(
+                   OBJECT_DELETE(TRY_PARSE_JSON(test), 'user_location'),
+                   'user_location',
+                   OBJECT_INSERT(
+                       OBJECT_INSERT(
+                           OBJECT_DELETE(TRY_PARSE_JSON(test):"user_location", 'lat'),
+                           'lat',
+                           ROUND(TRY_PARSE_JSON(test):"user_location":"lat"::FLOAT, 3)
+                       ),
+                       'long',
+                       ROUND(TRY_PARSE_JSON(test):"user_location":"long"::FLOAT, 3)
+                   )
+               )
+           );
